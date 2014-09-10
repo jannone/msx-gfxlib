@@ -1,0 +1,56 @@
+GFX is a small game programming library for the great MSX computer :)
+
+>> Site: [ http://jannone.org/gfxlib/ ]
+
+Currently it is a work-in-progress (currently targeted at MSX 1.x series)
+
+I decided to release this unfinished code anyway because:
+	* it works.  well, the examples DO work ya know :)
+	* it might be useful to someone else (writing code, learning, ...)
+	* my lack of time isn't helping to move forward
+
+SO... give it a try, look at the cool examples, send patches :)
+
+Check the Changelog to see some of the most recent features.
+
+Hope you enjoy it.  Happy coding!
+
+-- Rafael Jannone (rafael AT jannone DOT org)
+
+Oh, and BTW, I wanna thank some of the MSXBR-L folks who gave me valuable 
+information over time.  Thank you guys. :)
+
+== FAQ
+
+Q. How do I test the examples?
+
+A. You'll need a disk with DOS.  Then just copy the .COM files
+   inside, boot up your MSX and run the examples.
+
+
+Q. How do I compile this stuff under Linux?
+
+A. Install cpmemu (CP/M emulator) and Hitech-C compiler.
+
+
+Q. And then what?
+
+A. Grab some scripts to make your life easier. I am using those
+   nice ones in the Makefile:
+
+	http://uzix.sourceforge.net/common/htc_linux/htc
+	http://uzix.sourceforge.net/common/htc_linux/htlibr
+
+   Credits are into the scripts (thanks) :)
+
+
+Q. Is there any documentation?
+
+A. Yes! I figured it would be better to write some docs for more 
+   people to get involved, so documentation is now available at
+   the site.
+
+
+Q. No more answers?
+
+A. No more questions? :)

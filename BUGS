@@ -1,0 +1,18 @@
+KNOWN BUGS:
+
+* pset strange behavior (maybe a problem in vmerge?)
+* unimplemented functions/structs (surface_t is high priority)
+* some unimplemented sprite stuff
+.
+.
+.
+
+Please heeeeelp! :)
+
+-- Rafael
+
+
+FIXED BUGS:
+* flat shading rendering crashes sometimes [FIXED] -> it was a bug in hline actually :)
+* surface_hline and hline side blurring [FIXED] -> a cast to u_char was missing
+

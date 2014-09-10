@@ -1,0 +1,27 @@
+2005-03-03:
+	* added PSG manipulation functions (documented)
+
+2005-03-02:
+	* preliminar documentation (powered by doxygen)
+	* more hline bugfixes (side blurring is now gone)
+
+2005-03-01 v3:
+	* hline bugfix (fixes crash in triangle rendering)
+
+2005-03-01 v2:
+	* implemented the 3D API
+		- structs: vectors, triangles, meshes, objects
+		- vector math
+		- object rendering: wireframe and *flat shading*! :D
+	* added ex11.c, a spinning 3D solid (pyramid)
+
+2005-03-01:
+	* small line optimization
+	* added calculate_side, for triangle rendering
+	* added hline and surface_hline
+	* added ordered dithering patterns
+	* added ex10.c showing off the triangle stuff, with animation
+	* some defines moved to defs.h
+
+2005-02-27:
+	* initial public release
