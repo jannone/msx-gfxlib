@@ -42,6 +42,10 @@ See the License at http://www.gnu.org/copyleft/lesser.txt
 #include "line.h"
 #include "3d.h"
 
+#ifdef __SDCC
+#include "defs_sdcc.h"
+#endif
+
 int *tcos, *tsin;
 
 void create_lookup_tables() {
@@ -234,8 +238,13 @@ void object_render_flatshading(surface_t* s, object_t* obj, vector_t* pbuffer, i
 			// FIXME: can optimize memset's by covering only "top" to "bottom" lines
 			// in this case we should require clean buffers to start with.
 			// and we should clean them after rendering.
-			memset(low, MODE2_HEIGHT << 1, 64);	// FIXME: must use surface height
-			memset(high, MODE2_HEIGHT << 1, 0);	// FIXME: must use surface height
+#ifdef __SDCC
+			memset((unsigned char*)low, 64, MODE2_HEIGHT << 1);	// FIXME: must use surface height
+			memset((unsigned char*)high, 0, MODE2_HEIGHT << 1);	// FIXME: must use surface height
+#else
+			memset((unsigned char*)low, MODE2_HEIGHT << 1, 64);	// FIXME: must use surface height
+			memset((unsigned char*)high, MODE2_HEIGHT << 1, 0);	// FIXME: must use surface height
+#endif
 
 			// calculate polygon
 			calculate_side(i->x, i->y, j->x, j->y, low, high);

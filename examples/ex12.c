@@ -21,6 +21,9 @@ Contact the author:
 #include <stdio.h>
 #include "gfx.h"
 
+#ifdef __SDCC
+void
+#endif
 main() {
 	int tone[128];
 

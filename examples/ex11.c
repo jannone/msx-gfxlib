@@ -18,10 +18,15 @@ Contact the author:
 
 =========================================================================*/
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include "3d.h"
 #include "line.h"
+
+#ifdef __SDCC
+#include "defs_sdcc.h"
+#endif
 
 // build a pyramid mesh
 
@@ -90,13 +95,17 @@ main() {
 
 	// this is a vector buffer, for the transformations
 	// our only object have 5 vertexes, but we'll make space for 32 anyway
-	vector_t *pbuffer = newa(vector_t, 32);
+	vector_t *pbuffer;
 
 	// off-screen surface buffer
-	u_char* sbuffer = (u_char*)malloc(MODE2_MAX);
+	u_char* sbuffer;
 
 	// our solid :)
 	object_t triangle;
+
+        pbuffer = newa(vector_t, 32);
+        sbuffer = (u_char*)malloc(MODE2_MAX);
+
 	triangle.mesh = build_mesh();
 	triangle.rot_x = triangle.rot_y = triangle.rot_z = 0;
 	triangle.trans_x = triangle.trans_y = 0;
@@ -136,7 +145,11 @@ main() {
 		triangle.rot_z += 1;
 
 		// clear the off-screen buffer
-		memset(sbuffer, MODE2_MAX, 0);	// [*] 
+#ifdef __SDCC                
+		memset(sbuffer, 0, MODE2_MAX);	// [*]
+#else
+		memset(sbuffer, MODE2_MAX, 0);	// [*]
+#endif                
 
 		// render the object
 		if (flat)

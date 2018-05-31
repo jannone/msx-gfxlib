@@ -21,6 +21,10 @@ Contact the author:
 #include <stdlib.h>
 #include "line.h"
 
+#ifdef __SDCC
+#include "defs_sdcc.h"
+#endif
+
 int low[MODE2_HEIGHT];
 int high[MODE2_HEIGHT];
 u_char *buf;
@@ -40,10 +44,16 @@ main() {
 	c = 0;
 
 	// paint polygon
-	for (;;) {	
-		memset(buf, MODE2_MAX, 0);	// yeah... crap
-		memset(low, MODE2_HEIGHT << 1, 64);	// yeah... crap
-		memset(high, MODE2_HEIGHT << 1, 0);	// yeah... crap
+	for (;;) {
+#ifdef __SDCC
+		memset(buf,   0,         MODE2_MAX); // yeah... crap
+		memset(low,  64, MODE2_HEIGHT << 1); // yeah... crap
+		memset(high,  0, MODE2_HEIGHT << 1); // yeah... crap
+#else          
+		memset(buf,          MODE2_MAX,  0); // yeah... crap
+		memset(low,  MODE2_HEIGHT << 1, 64); // yeah... crap
+		memset(high, MODE2_HEIGHT << 1,  0); // yeah... crap
+#endif
 
 		// calculate polygon
 		calculate_side(128 + c, c + 20, 40, 180 - c, low, high);

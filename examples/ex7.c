@@ -23,6 +23,18 @@ Contact the author:
 #include "gfx.h"
 
 // shapes and attributes
+#ifdef __SDCC
+extern const u_char grass1[8];
+extern const u_char grass1_attr[8];
+extern const u_char grass2[8];
+extern const u_char grass2_attr[8];
+extern const u_char water1[8];
+extern const u_char water2[8];
+extern const u_char water3[8];
+ 
+extern const u_char spaceship[32];
+extern const u_char fire[32];
+#else
 
 extern u_char grass1[8];
 extern u_char grass1_attr[8];
@@ -34,7 +46,7 @@ extern u_char water3[8];
 
 extern u_char spaceship[32];
 extern u_char fire[32];
-
+#endif
 
 // terrain definitions
 
@@ -256,6 +268,165 @@ main() {
 
 // binary data (shapes, attributes, whatever...)
 
+#ifdef __SDCC
+
+#define BITS_TO_BYTE(a,b,c,d,e,f,g,h) ((a)<<7 | (b)<<6 | (c)<<5 | (d)<<4 | (e)<<3 | (f)<<2 | (g)<<1 | (h))
+
+const u_char grass1[8]={
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,1,1,1,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(1,0,0,0,0,0,1,1),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,1,1,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,1,0,0),
+  BITS_TO_BYTE(0,0,0,1,1,0,1,0)
+};
+
+const u_char grass1_attr[8]={
+  0x32,
+  0x32,
+  0x32,
+  0xB2,
+  0x32,
+  0x32,
+  0xB2,
+  0xA2
+};
+
+const u_char grass2[8]={
+  BITS_TO_BYTE(0,1,0,1,1,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(1,1,1,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,1,1,1),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,1,0,0,0,0,0)
+};
+
+const u_char grass2_attr[8]={
+  0x0A2,
+  0x032,
+  0x032,
+  0x0B2,
+  0x032,
+  0x032,
+  0x032,
+  0x0B2
+};
+
+const u_char water1[8]={
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(1,1,1,1,1,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,1,1,1,1,1,1),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0)
+};
+
+const u_char water2[8]={
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(1,1,1,1,1,1,1,1),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,1,1,1),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0)
+};
+
+const u_char water3[8]={
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0)
+};
+
+const u_char spaceship[32]={
+  BITS_TO_BYTE(0,0,0,0,0,0,1,1),
+  BITS_TO_BYTE(0,0,0,0,0,0,1,1),
+  BITS_TO_BYTE(0,0,0,0,0,0,1,1),
+  BITS_TO_BYTE(0,0,0,0,0,1,1,1),
+  BITS_TO_BYTE(0,0,0,0,0,1,1,1),
+  BITS_TO_BYTE(1,1,0,0,0,1,1,1),
+  BITS_TO_BYTE(1,1,0,0,0,1,1,1),
+  BITS_TO_BYTE(1,1,1,0,0,1,1,1),
+  
+  BITS_TO_BYTE(1,1,1,0,1,1,1,0),
+  BITS_TO_BYTE(1,1,1,0,1,1,1,0),
+  BITS_TO_BYTE(1,1,1,1,1,1,1,0),
+  BITS_TO_BYTE(1,1,1,1,1,1,1,1),
+  BITS_TO_BYTE(1,1,1,0,0,1,1,1),
+  BITS_TO_BYTE(1,1,0,0,0,0,1,1),
+  BITS_TO_BYTE(1,1,1,1,0,0,0,0),
+  BITS_TO_BYTE(1,0,0,1,0,0,0,0),
+
+  BITS_TO_BYTE(1,1,0,0,0,0,0,0),
+  BITS_TO_BYTE(1,1,0,0,0,0,0,0),
+  BITS_TO_BYTE(1,1,0,0,0,0,0,0),
+  BITS_TO_BYTE(1,1,1,0,0,0,0,0),
+  BITS_TO_BYTE(1,1,1,0,0,0,0,0),
+  BITS_TO_BYTE(1,1,1,0,0,0,1,1),
+  BITS_TO_BYTE(1,1,1,0,0,0,1,1),
+  BITS_TO_BYTE(1,1,1,0,0,1,1,1),
+  
+  BITS_TO_BYTE(0,1,1,1,0,1,1,1),
+  BITS_TO_BYTE(0,1,1,1,0,1,1,1),
+  BITS_TO_BYTE(0,1,1,1,1,1,1,1),
+  BITS_TO_BYTE(1,1,1,1,1,1,1,1),
+  BITS_TO_BYTE(1,1,1,0,0,1,1,1),
+  BITS_TO_BYTE(1,1,0,0,0,0,1,1),
+  BITS_TO_BYTE(0,0,0,0,1,1,1,1),
+  BITS_TO_BYTE(0,0,0,0,1,0,0,1)
+};
+
+const u_char fire[32]={
+  BITS_TO_BYTE(0,0,0,1,1,0,0,0),
+  BITS_TO_BYTE(0,0,1,1,1,1,0,0),
+  BITS_TO_BYTE(0,0,1,1,1,1,0,0),
+  BITS_TO_BYTE(0,1,1,1,1,1,1,0),
+  BITS_TO_BYTE(0,1,1,1,1,1,1,0),
+  BITS_TO_BYTE(0,1,1,1,1,1,1,0),
+  BITS_TO_BYTE(0,1,1,1,0,1,1,0),
+  BITS_TO_BYTE(0,1,0,1,0,1,0,0),
+
+  BITS_TO_BYTE(0,0,0,1,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,1,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,1,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0),
+  BITS_TO_BYTE(0,0,0,0,0,0,0,0)
+};
+
+#else
+
 #asm
 psect data
 
@@ -388,4 +559,4 @@ _fire:
 
 #endasm
 
-
+#endif

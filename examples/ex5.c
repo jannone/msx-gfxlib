@@ -24,27 +24,33 @@ Contact the author:
 #include "gfx.h"
 #include "line.h"
 
+#ifdef __SDCC
+#include "defs_sdcc.h"
+#endif
+
 typedef struct {
 	int x;
 	int y;
 } point_t;
 
-#define MAX_POINT	12
+#define MAX_POINT	9
 
 main() {
-	u_char* buf = (u_char*)malloc(MODE2_MAX);
-
+	u_char* buf;
 	double	M_PI;
 	double	a;
 	int	c, i;
 	surface_t surf;
 	point_t	p[MAX_POINT];
-
-	printf("calculating, wait...\n");
+#ifdef __SDCC
+       // init();
+#endif
+    buf = (u_char*)malloc(MODE2_MAX);
+    printf("calculating, wait...\n");
 
 	M_PI = 8.0 * atan(1.0);
 
-	// calculates points from circunference
+	// calculates points from circumference
 	for (c = 0; c < MAX_POINT; c++) {
 		a = (M_PI * (double)c) / (double)MAX_POINT;
 		p[c].x = (int)(100.0 * cos(a) + 128.0);
@@ -52,24 +58,33 @@ main() {
 	}
 
 	// clear the off-screen surface
-	printf("clearing buffer...\n");
+	 printf("clearing buffer...\n");
+#ifdef __SDCC
+	memset(buf, 0, MODE2_MAX);
+#else
 	memset(buf, MODE2_MAX, 0);
-
+#endif
 	printf("drawing...\n");
 	surf.data.ram = buf;
 
 	// draw the eye's lines into the surface (obs: we are NOT in graphic mode yet)
-	for (c = 0; c < MAX_POINT; c++) 
-		for (i = c+1; i < MAX_POINT; i++)
-			surface_line(&surf, p[c].x, p[c].y, p[i].x, p[i].y);
+	for (c = 0; c < MAX_POINT; c++)
+	 	for (i = c+1; i < MAX_POINT; i++)
+	 		surface_line(&surf, p[c].x, p[c].y, p[i].x, p[i].y);
 
 	// set screen to graphic mode
 	set_color(15, 1, 1);
 	set_mode(mode_2);
+
 	fill(MODE2_ATTR, 0xF1, MODE2_MAX);
 
 	// finally show the surface
 	vwrite(surf.data.ram, 0, MODE2_MAX);
+
+	// draw the eye's lines into the surface (obs: we are NOT in graphic mode yet)
+	//for (c = 0; c < MAX_POINT; c++)
+	// 	for (i = c+1; i < MAX_POINT; i++)
+	// 		line_slow(p[c].x, p[c].y, p[i].x, p[i].y);
 
 	while (!get_trigger(0)) {}
 

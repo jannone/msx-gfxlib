@@ -22,6 +22,10 @@ Contact the author:
 #include <math.h>
 #include "gfx.h"
 
+#ifdef __SDCC
+#include "defs_sdcc.h"
+#endif
+
 typedef struct {
 	int x;
 	int y;
@@ -29,6 +33,9 @@ typedef struct {
 
 #define MAX_POINT	256
 
+#ifdef __SDCC
+void
+#endif
 main() {
 	double	M_PI;
 	double	a;

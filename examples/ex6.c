@@ -21,6 +21,20 @@ Contact the author:
 #include <stdio.h>
 #include "gfx.h"
 
+#ifdef __SDCC
+
+const u_char diamond[8]={
+  0x10, 0x38, 0x5C, 0xFE,
+  0x74, 0x38, 0x10, 0x00
+};
+
+const u_char diamond_attr[8]={
+  0x70, 0x70, 0x70, 0xF0,
+  0x50, 0x50, 0x50, 0x00
+};
+
+#else
+
 #asm
 psect data
 
@@ -50,7 +64,11 @@ _diamond_attr:
 
 extern u_char diamond[8];
 extern u_char diamond_attr[8];
+#endif
 
+#ifdef __SDCC
+void
+#endif
 main() {
 	int d;
 	int x, y;

@@ -36,20 +36,25 @@ See the License at http://www.gnu.org/copyleft/lesser.txt
 	not properly cleaned up nor tested.
 
    === WARNING == */
-
 #include "line.h"
 
 #define LINE_T_MEMBERS \
-	int dinc1, dinc2;	\
-	char xinc1, xinc2;	\
-	char yinc1, yinc2;	\
-	int numpixels;		\
+	int dinc1; \
+	int dinc2; \
+	char xinc1; \
+    char xinc2;	\
+	char yinc1; \
+    char yinc2;	\
+	int numpixels; \
 	int d
 
 typedef struct {
 	LINE_T_MEMBERS;
 } line_t;
 
+#ifdef __SDCC
+#define LINET_MEMBER(m) (linet.m)
+#else
 /*
 	ok, what follows is quite an evil hack. lemme explain.
 
@@ -68,12 +73,18 @@ typedef struct {
 #define LINE_T_FIRST	dinc1
 
 #define REVERSE_LINE_T_MEMBERS \
-	int d;			\
-	int numpixels;		\
-	char yinc2, yinc1;	\
-	char xinc2, xinc1;	\
-	int dinc2, dinc1
+	int d;               \
+	int numpixels;       \
+	char yinc2; \
+	char yinc1; \
+	char xinc2; \
+	char xinc1; \
+	int dinc2; \
+	int dinc1
 
+#define LINET_MEMBER(m) (m)
+
+#endif
 
 // this macro is probably deprecated by now
 /*
@@ -128,28 +139,39 @@ void compute_line(int x1, int y1, int x2, int y2, line_t *r) {
 	}
 }
 
+#ifdef __SDCC
+#pragma disable_warning 84
+#endif
 void line(int x1, int y1, int x2, int y2)
 {
+#ifdef __SDCC
+	line_t linet;
+#else
 	REVERSE_LINE_T_MEMBERS;
+#endif
 
 	int i;
 	u_int addr, last;
 	u_char bit, value;
 
+#ifdef __SDCC
+	compute_line(x1, y1, x2, y2, &linet);
+#else
 	compute_line(x1, y1, x2, y2, (line_t*)&LINE_T_FIRST);
+#endif
 
 	addr = map_pixel(x1, y1);
 	bit = map_subpixel(x1);
 	value = vpeek(addr);
 	last = addr;
 
-	for (i=0; i < numpixels; i++) {
+	for (i=0; i < LINET_MEMBER(numpixels); i++) {
 		value |= bit;
 
-		if (d<0) {
-			d += dinc1;
-			if (xinc1) {
-				if (xinc1 > 0) {
+		if (LINET_MEMBER(d)<0) {
+			LINET_MEMBER(d) += LINET_MEMBER(dinc1);
+			if (LINET_MEMBER(xinc1)) {
+				if (LINET_MEMBER(xinc1) > 0) {
 					bit >>= 1;
 					if (!bit) {
 						addr += 8;
@@ -163,8 +185,8 @@ void line(int x1, int y1, int x2, int y2)
 					}
 				}
 			}
-			if (yinc1) {
-				if (yinc1 > 0) {
+			if (LINET_MEMBER(yinc1)) {
+				if (LINET_MEMBER(yinc1) > 0) {
 					addr += 1;
 					if (!(addr & 7))
 						addr += 256 - 8;
@@ -177,9 +199,9 @@ void line(int x1, int y1, int x2, int y2)
 		}
 		else
 		{
-			d += dinc2;
-			if (xinc2) {
-				if (xinc2 > 0) {
+			LINET_MEMBER(d) += LINET_MEMBER(dinc2);
+			if (LINET_MEMBER(xinc2)) {
+				if (LINET_MEMBER(xinc2) > 0) {
 					bit >>= 1;
 					if (!bit) {
 						addr += 8;
@@ -193,8 +215,8 @@ void line(int x1, int y1, int x2, int y2)
 					}
 				}
 			}
-			if (yinc2) {
-				if (yinc2 > 0) {
+			if (LINET_MEMBER(yinc2)) {
+				if (LINET_MEMBER(yinc2) > 0) {
 					addr += 1;
 					if (!(addr & 7))
 						addr += 256 - 8;
@@ -216,13 +238,21 @@ void line(int x1, int y1, int x2, int y2)
 
 void line_slow(int x1, int y1, int x2, int y2)
 {
+#ifdef __SDCC
+	line_t linet;
+#else
 	REVERSE_LINE_T_MEMBERS;
+#endif
 
 	int i, x, y;
 	u_int addr, last;
 	u_char value;
 
+#ifdef __SDCC
+	compute_line(x1, y1, x2, y2, &linet);
+#else
 	compute_line(x1, y1, x2, y2, (line_t*)&LINE_T_FIRST);
+#endif
 
 	x = x1;
 	y = y1;
@@ -230,18 +260,18 @@ void line_slow(int x1, int y1, int x2, int y2)
 	last = addr;
 	value = vpeek(addr);
 
-	for (i=0; i < numpixels; i++) {
+	for (i=0; i < LINET_MEMBER(numpixels); i++) {
 		value |= map_subpixel(x);
-		if (d<0) {
-			d += dinc1;
-			x += xinc1;
-			y += yinc1;
+		if (LINET_MEMBER(d)<0) {
+			LINET_MEMBER(d) += LINET_MEMBER(dinc1);
+			x += LINET_MEMBER(xinc1);
+			y += LINET_MEMBER(yinc1);
 		}
 		else
 		{
-			d += dinc2;
-			x += xinc2;
-			y += yinc2;
+			LINET_MEMBER(d) += LINET_MEMBER(dinc2);
+			x += LINET_MEMBER(xinc2);
+			y += LINET_MEMBER(yinc2);
 		}
 		addr = map_pixel(x, y);
 		if (last != addr) {
@@ -254,26 +284,34 @@ void line_slow(int x1, int y1, int x2, int y2)
 }
 
 void surface_line(surface_t* s, int x1, int y1, int x2, int y2) {
+#ifdef __SDCC
+	line_t linet;
+#else
 	REVERSE_LINE_T_MEMBERS;
+#endif
 
 	int i;
 	u_int addr;
 	u_char* data, bit;
 
+#ifdef __SDCC
+	compute_line(x1, y1, x2, y2, &linet);
+#else
 	compute_line(x1, y1, x2, y2, (line_t*)&LINE_T_FIRST);
+#endif
 
 	data = s->data.ram;
 	addr = map_pixel(x1, y1);
 	bit = map_subpixel(x1);
 
-	i = numpixels;
+	i = LINET_MEMBER(numpixels);
 	while (i--) {
 		data[addr] |= bit;
 
-		if (d<0) {
-			d += dinc1;
-			if (xinc1) {
-				if (xinc1 > 0) {
+		if (LINET_MEMBER(d)<0) {
+			LINET_MEMBER(d) += LINET_MEMBER(dinc1);
+			if (LINET_MEMBER(xinc1)) {
+				if (LINET_MEMBER(xinc1) > 0) {
 					bit >>= 1;
 					if (!bit) {
 						addr += 8;
@@ -287,8 +325,8 @@ void surface_line(surface_t* s, int x1, int y1, int x2, int y2) {
 					}
 				}
 			}
-			if (yinc1) {
-				if (yinc1 > 0) {
+			if (LINET_MEMBER(yinc1)) {
+				if (LINET_MEMBER(yinc1) > 0) {
 					addr += 1;
 					if (!(addr & 7))
 						addr += 256 - 8;
@@ -301,9 +339,9 @@ void surface_line(surface_t* s, int x1, int y1, int x2, int y2) {
 		}
 		else
 		{
-			d += dinc2;
-			if (xinc2) {
-				if (xinc2 > 0) {
+			LINET_MEMBER(d) += LINET_MEMBER(dinc2);
+			if (LINET_MEMBER(xinc2)) {
+				if (LINET_MEMBER(xinc2) > 0) {
 					bit >>= 1;
 					if (!bit) {
 						addr += 8;
@@ -317,8 +355,8 @@ void surface_line(surface_t* s, int x1, int y1, int x2, int y2) {
 					}
 				}
 			}
-			if (yinc2) {
-				if (yinc2 > 0) {
+			if (LINET_MEMBER(yinc2)) {
+				if (LINET_MEMBER(yinc2) > 0) {
 					addr += 1;
 					if (!(addr & 7))
 						addr += 256 - 8;
@@ -451,6 +489,18 @@ void hline(int x1, int y1, int x2, u_char value) {
 	}
 }
 
+#ifdef __SDCC
+
+const u_char dithpat[5][2]={
+  { 0x00, 0x00 },
+  { 0x00, 0xAA },
+  { 0x55, 0xAA },
+  { 0xFF, 0xAA },
+  { 0xFF, 0xFF }
+};
+
+#else
+
 #asm
 psect data
 
@@ -471,3 +521,5 @@ _dithpat:
 	defb	11111111B
 	defb	11111111B
 #endasm
+
+#endif

@@ -1,6 +1,6 @@
 /*=========================================================================
 
-GFX - a small graphics library
+GFX - a small graphics library 
 
 Copyright (C) 2004  Rafael de Oliveira Jannone
 
@@ -27,10 +27,7 @@ See the License at http://www.gnu.org/copyleft/lesser.txt
 
 =========================================================================*/
 
-/*! \file line.h
-    \brief line drawing functions
-*/
-// LINE.H : line drawing functions (header)
+// GFX.C : main library functions
 
 /* === WARNING ==
 
@@ -40,32 +37,12 @@ See the License at http://www.gnu.org/copyleft/lesser.txt
 
    === WARNING == */
 
-#ifndef LINE_H
-#define LINE_H
+#include "gfx_common.c"
 
-#include "gfx.h"
+#ifdef __SDCC
+#include "gfx_sdcc.c"
+#endif
 
-/// get a dithered pattern of intensity \a I on the screen line \a Y
-#define DITHER(I, Y)	(dithpat[I][Y & 1])
-
-extern u_char dithpat[5][2];
-
-/// draw a line on a surface
-void surface_line(surface_t*, int x1, int y1, int x2, int y2);
-
-/// draw a line on video
-void line(int x1, int y1, int x2, int y2);
-
-/// draw a line on video (slow)
-void line_slow(int x1, int y1, int x2, int y2);
-
-/// calculate a triangle side
-void calculate_side(int x1, int y1, int x2, int y2, int low[], int high[]);
-
-/// draw horizontal line on video. \a value can be a bit pattern. note: x1 <= x2
-void hline(int x1, int y1, int x2, u_char value);
-
-/// draw horizontal line on surface. \a value can be a bit pattern. note: x1 <= x2
-void surface_hline(surface_t *s, int x1, int y1, int x2, u_char value);
-
+#ifdef __HTC
+#include "gfx_htc.c"
 #endif

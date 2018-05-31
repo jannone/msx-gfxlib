@@ -1,0 +1,64 @@
+* Current status of the SDCC port
+
+- OK :: basic graphic functions and sprites
+- OK :: joystick support
+- OK :: PSG functions
+- OK :: line drawing functions
+- OK :: surface_t and polygon filling
+- OK :: 3D functions
+- BROKEN :: ~ex8.c~ (doesn't compile due to lack of I/O file
+            primitives in SDCC)
+
+* Where are the precompiled examples?
+The compiled .ROM files are included in the Release packages. I successfully compiled them with SDCC 3.6.6 build 9903.
+
+* Compiling the examples with SDCC
+** Prerequisites
+You need to have in your PATH these programs: ~make~, ~dd~, ~rm~, ~sed~,
+~gawk~. Linux users always have them installed, but if you work on
+Windows find them with Google (search for "UnxUtils").
+
+You also need to have SDCC utilities in your PATH and to set the variable
+~SDCC_HOME~.
+** How to compile using Makefile.sdcc
+Cd to the same directory of ~Makefile.sdcc~ and type the following
+commands:
+
+#+BEGIN_SRC sh
+  # To compile all the working examples:
+  #
+  make -f Makefile.sdcc all
+
+  # to clean the directory from all intermediate files
+  # (.rel, .asm etc.):
+  #
+  make -f Makefile.sdcc clean
+
+  # This will compile the custom heap for examples
+  # that need big space for malloc; 9000 bytes
+  # proved sufficient for all included examples
+  #
+  make -f Makefile.sdcc heap.rel
+
+  # This doesn't work on SDCC yet: it needs .COM format
+  # and file functions (fread, fseek etc.)
+  #
+  # make -f Makefile.sdcc ex8.rom
+
+#+END_SRC
+
+** Notes about compilation flags
+I had to enable ~-fsigned-char~ because SDCC 3.6.0 and later assume that ~char~ type is unsigned.
+
+* Roadmap of improvements
+** Bug corrections to be done
+  - add file I/O functions to ~ex8.c~ and compile it
+  - don't assume BIOS is always in slot zero, use EXPTBL value instead
+  
+** Future enhancements proposed
+  - add support for MSX pad primitives
+  - add support for mouse?
+  - split ~gfx.c~ in several files (so linker can include just the
+    modules that are actually invoked): ~gfx.c~, ~psg.c~, ~joystick.c~...
+  - pack the GFXlib in a library archive (~gfx.a~) using the SDCC ~ar~ utility
+

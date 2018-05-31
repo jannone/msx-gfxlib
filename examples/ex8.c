@@ -27,6 +27,14 @@ Contact the author:
 
 // binary data
 
+#ifdef __SDCC
+const u_char square[]={
+  0xE7, 0x81, 0x81, 0x00,
+  0x00, 0x81, 0x81, 0xE7
+};
+
+#else
+
 #asm
 
 psect data
@@ -46,6 +54,9 @@ _square:
 
 // cursor shape
 extern u_char square[];
+
+#endif
+
 
 // zooms into a char shape
 void preview_char(u_char* p) {

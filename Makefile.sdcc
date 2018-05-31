@@ -1,0 +1,60 @@
+SDCC?=sdcc
+SDAS?=sdasz80
+MAKEBIN?=makebin
+
+UNIX_DD?=dd
+UNIX_SED?=sed
+UNIX_AWK?=gawk
+UNIX_GREP?=grep
+
+CFLAGS?=--code-loc 0x4020 --data-loc 0xc000 -mz80 --no-std-crt0 --fsigned-char
+
+ROM16KBLOCKS?=2
+ROM16KSKIP?=1
+OTHERLIBS?=
+
+CRTOBJ?=sdcc/crt/crt0msx.32k.4000.rel
+CRTSRC?=sdcc/crt/crt0msx.32k.4000.s
+GFXLIB?=dist/gfx.rel dist/line.rel
+ROMS_HEAP_REL=
+ROMS_3D_REL=
+
+all: $(GFXLIB)
+
+%.rom: %.ddmem
+	$(UNIX_DD) if=$< of=$@ bs=16384 skip=$(ROM16KSKIP) count=$(ROM16KBLOCKS)
+
+%.ddmem: %.ihx
+	$(MAKEBIN) -s 65536 < $< > $@
+
+%.noi: %.ihx
+
+%.sdccsym: %.noi
+	$(UNIX_AWK) 'BEGIN { FS=" "; } /DEF.*/ { print $$2 ": equ 0" substr($$3,3) "h"; }' < $< > $<tmp
+	-$(UNIX_GREP) -v "_end: equ " $<tmp > $@
+
+#%.ihx: %.rel $(CRTOBJ) $(GFXLIB) $(OTHERLIBS) heap.rel 3d.rel 
+#	$(SDCC) $(CFLAGS) $(LDFLAGS) -o$@ $(CRTOBJ) $< $(GFXLIB) $(OTHERLIBS) $(if $(filter $< , $(ROMS_HEAP_REL)),heap.rel,) $(if $(filter $< , $(ROMS_3D_REL)),3d.rel,) 
+
+%.ihx: %.rel $(CRTOBJ) $(GFXLIB) $(OTHERLIBS)
+	$(SDCC) $(CFLAGS) $(LDFLAGS) -o$@ $(CRTOBJ) $< $(GFXLIB) $(OTHERLIBS) $(if $(filter $< , $(ROMS_HEAP_REL)),heap.rel,) $(if $(filter $< , $(ROMS_3D_REL)),3d.rel,) 
+
+heap.rel: heap.s
+	$(SDAS) -o heap.rel heap.s
+
+heap.s: $(SDCC_HOME)/lib/src/z80/heap.s
+	$(UNIX_SED) -e 's/1023/9000/' "$(SDCC_HOME)"/lib/src/z80/heap.s > ./heap.s
+
+dist/%.rel: src/%.c
+	$(SDCC) -c $(CFLAGS) -o $@ $<
+
+$(CRTOBJ): $(CRTSRC)
+	$(SDAS) -o $(CRTOBJ) $(CRTSRC)
+
+clean:
+	$(RM) dist/*
+
+version:
+	$(SDCC) -v
+
+.PRECIOUS: %.rel %.ddmem %.ihx %.noi %.rst
